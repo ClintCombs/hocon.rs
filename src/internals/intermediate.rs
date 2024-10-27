@@ -5,7 +5,6 @@ use crate::{Hocon, HoconLoaderConfig};
 
 use super::value::HoconValue;
 
-use crate::internals::value;
 use linked_hash_map::LinkedHashMap;
 
 #[derive(Clone, Debug)]
@@ -173,7 +172,7 @@ impl Node {
                             .ok_or(crate::Error::KeyNotFound {
                                 key: path
                                     .into_iter()
-                                    .map(value::HoconValue::string_value)
+                                    .map(HoconValue::string_value)
                                     .collect::<Vec<_>>()
                                     .join("."),
                             })
@@ -190,7 +189,7 @@ impl Node {
                 crate::Error::KeyNotFound {
                     key: path
                         .into_iter()
-                        .map(value::HoconValue::string_value)
+                        .map(HoconValue::string_value)
                         .collect::<Vec<_>>()
                         .join(".")
                 }

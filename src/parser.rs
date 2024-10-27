@@ -1,7 +1,7 @@
 use nom::*;
 
 use std::borrow::Cow;
-use std::str;
+use std::str::{self, FromStr};
 
 use crate::internals::{unescape, Hash, HoconInternal, HoconValue, Include};
 use crate::HoconLoaderConfig;
@@ -63,7 +63,7 @@ named!(
 );
 
 struct F64WithoutLeadingDot(f64);
-impl std::str::FromStr for F64WithoutLeadingDot {
+impl FromStr for F64WithoutLeadingDot {
     type Err = ();
     fn from_str(v: &str) -> Result<Self, ()> {
         if let Some(".") = v.get(0..1) {
@@ -373,7 +373,7 @@ named_args!(
     hash<'a>(config: &HoconLoaderConfig)<Result<Hash, crate::Error>>,
     sp!(map!(
         delimited!(char!('{'), call!(separated_hashlist, config), call!(closing, '}')),
-        |tuple_vec| Ok(tuple_vec?.into_iter().flat_map(std::iter::IntoIterator::into_iter).collect())
+        |tuple_vec| Ok(tuple_vec?.into_iter().flat_map(IntoIterator::into_iter).collect())
     ))
 );
 
@@ -381,7 +381,7 @@ named_args!(
     root_hash<'a>(config: &HoconLoaderConfig)<Result<Hash, crate::Error>>,
     sp!(map!(
         do_parse!(not!(char!('{')) >> list: call!(separated_hashlist, config) >> (list)),
-        |tuple_vec| Ok(tuple_vec?.into_iter().flat_map(std::iter::IntoIterator::into_iter).collect())
+        |tuple_vec| Ok(tuple_vec?.into_iter().flat_map(IntoIterator::into_iter).collect())
     ))
 );
 
